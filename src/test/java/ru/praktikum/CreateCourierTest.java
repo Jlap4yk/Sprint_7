@@ -3,18 +3,13 @@ package ru.praktikum;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
-import io.restassured.config.LogConfig;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.praktikum.Courier;
-import ru.praktikum.CourierSteps;
-
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+import static org.apache.http.HttpStatus.*;
 
 public class CreateCourierTest {
     private String login;
@@ -38,10 +33,10 @@ public class CreateCourierTest {
             if (login != null && password != null) {
                 Response loginResponse = courierCreate.sendPostRequestCourierLogin(
                         new Courier(login, password, firstName));
-                if (loginResponse.statusCode() == 200) {
+                if (loginResponse.statusCode() == SC_OK) {
                     courierId = loginResponse.jsonPath().getInt("id");
                     Response deleteResponse = courierCreate.sendRequestDeleteCourier(courierId);
-                    if (deleteResponse.statusCode() == 200) {
+                    if (deleteResponse.statusCode() == SC_OK) {
                         System.out.println("Курьер успешно удален, ID: " + courierId);
                     } else {
                         System.out.println("Не удалось удалить курьера. Код: " +
@@ -62,7 +57,7 @@ public class CreateCourierTest {
                 .then()
                 .log().ifValidationFails()
                 .assertThat()
-                .statusCode(201)
+                .statusCode(SC_CREATED)
                 .body("ok", equalTo(true));
     }
 
@@ -74,13 +69,13 @@ public class CreateCourierTest {
                 .then()
                 .log().ifValidationFails()
                 .assertThat()
-                .statusCode(201)
+                .statusCode(SC_CREATED)
                 .body("ok", equalTo(true));
         courierCreate.sendPostRequestCourierCreate(new Courier(login, password, firstName))
                 .then()
                 .log().ifValidationFails()
                 .assertThat()
-                .statusCode(409)
+                .statusCode(SC_CONFLICT)
                 .body("message", equalTo("Этот логин уже используется"));
     }
 
@@ -92,7 +87,7 @@ public class CreateCourierTest {
                 .then()
                 .log().ifValidationFails()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
@@ -104,7 +99,7 @@ public class CreateCourierTest {
                 .then()
                 .log().ifValidationFails()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
@@ -116,7 +111,7 @@ public class CreateCourierTest {
                 .then()
                 .log().ifValidationFails()
                 .assertThat()
-                .statusCode(201)
+                .statusCode(SC_CREATED)
                 .body("ok", equalTo(true));
     }
 
@@ -128,7 +123,7 @@ public class CreateCourierTest {
                 .then()
                 .log().ifValidationFails()
                 .assertThat()
-                .statusCode(400)
+                .statusCode(SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 }

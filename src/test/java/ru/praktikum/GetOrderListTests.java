@@ -4,22 +4,22 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.apache.http.HttpStatus.*;
 
 public class GetOrderListTests {
+    private OrderSteps orderSteps;
+
     @Before
     public void setUp() {
         RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru/";
+        orderSteps = new OrderSteps();
     }
 
     @Test
     public void getOrderListWithNonExistentCourierIdTest() {
-        Response response = given()
-                .log().ifValidationFails()
-                .header("Content-type", "application/json")
-                .get("/api/v1/orders");
-        response.then().assertThat().statusCode(200);
+        Response response = orderSteps.getOrderList();
+        response.then().assertThat().statusCode(SC_OK);
         response.then().assertThat().body("orders", notNullValue());
     }
 }

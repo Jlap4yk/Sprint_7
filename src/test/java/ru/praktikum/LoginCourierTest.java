@@ -7,8 +7,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.praktikum.Courier;
-import ru.praktikum.CourierSteps;
+import static org.apache.http.HttpStatus.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -26,7 +25,7 @@ public class LoginCourierTest {
         courierLogin = new CourierSteps();
         courierLogin.sendPostRequestCourierCreate(new Courier(login,password))
                 .then()
-                .statusCode(201)
+                .statusCode(SC_CREATED)
                 .body("ok", is(true));
     }
 
@@ -36,7 +35,7 @@ public class LoginCourierTest {
     public void loginCourierTest() {
         courierLogin.sendPostRequestCourierLogin(new Courier(login,password))
                 .then()
-                .statusCode(200)
+                .statusCode(SC_OK)
                 .body("id", notNullValue());
     }
 
@@ -46,7 +45,7 @@ public class LoginCourierTest {
     public void loginCourierWithoutLoginTest() {
         courierLogin.sendPostRequestCourierLogin(new Courier("",password))
                 .then()
-                .statusCode(400)
+                .statusCode(SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для входа"));
     }
 
@@ -66,7 +65,7 @@ public class LoginCourierTest {
     public void loginCourierWithNonExistentLoginTest() {
         courierLogin.sendPostRequestCourierLogin(new Courier("qwerty",password))
                 .then()
-                .statusCode(404)
+                .statusCode(SC_NOT_FOUND)
                 .body("message", equalTo("Учетная запись не найдена"));
     }
 
@@ -76,7 +75,7 @@ public class LoginCourierTest {
     public void loginCourierWithNonExistentPasswordTest() {
         courierLogin.sendPostRequestCourierLogin(new Courier(login,"qwerty"))
                 .then()
-                .statusCode(404)
+                .statusCode(SC_NOT_FOUND)
                 .body("message", equalTo("Учетная запись не найдена"));
     }
 
@@ -87,7 +86,7 @@ public class LoginCourierTest {
         String wrongLogin = login + "_";
         courierLogin.sendPostRequestCourierLogin(new Courier(wrongLogin, password))
                 .then()
-                .statusCode(404)
+                .statusCode(SC_NOT_FOUND)
                 .body("message", equalTo("Учетная запись не найдена"));
     }
 
@@ -98,7 +97,7 @@ public class LoginCourierTest {
         String wrongPassword = password + "_";
         courierLogin.sendPostRequestCourierLogin(new Courier(login, wrongPassword))
                 .then()
-                .statusCode(404)
+                .statusCode(SC_NOT_FOUND)
                 .body("message", equalTo("Учетная запись не найдена"));
     }
 
@@ -111,7 +110,7 @@ public class LoginCourierTest {
         if (id != null) {
             courierLogin.sendRequestDeleteCourier(id)
                     .then()
-                    .statusCode(200);
+                    .statusCode(SC_OK);
         }
     }
 }

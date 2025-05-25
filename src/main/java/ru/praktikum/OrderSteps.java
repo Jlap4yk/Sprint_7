@@ -29,4 +29,13 @@ public class OrderSteps {
                 .when()
                 .put(CANCEL_ENDPOINT);
     }
+
+    @Step("Получение списка заказов")
+    public Response getOrderList() {
+        return given()
+                .log().ifValidationFails()
+                .header("Content-type", "application/json")
+                .when()
+                .get(ORDERS_ENDPOINT);
+    }
 }
