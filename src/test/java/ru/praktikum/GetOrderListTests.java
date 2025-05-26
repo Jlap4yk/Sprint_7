@@ -1,6 +1,5 @@
 package ru.praktikum;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,6 @@ public class GetOrderListTests {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru/";
         orderSteps = new OrderSteps();
     }
 

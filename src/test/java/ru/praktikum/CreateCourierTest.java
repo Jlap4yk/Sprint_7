@@ -2,7 +2,6 @@ package ru.praktikum;
 
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -20,7 +19,6 @@ public class CreateCourierTest {
 
     @Before
     public void setUp() {
-        RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru/";
         login = RandomStringUtils.randomAlphanumeric(3, 20);
         password = RandomStringUtils.randomAlphanumeric(8, 20);
         firstName = RandomStringUtils.randomAlphanumeric(4, 28);
